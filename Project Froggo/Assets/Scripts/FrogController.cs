@@ -8,6 +8,8 @@ public class FrogController : MonoBehaviour {
 	public float jumpProgress;
 	public bool jumping;
 
+	public bool isPlayerOne;
+
 	float jumpMax = 2.56f;
 
 	Animator anim;
@@ -32,33 +34,34 @@ public class FrogController : MonoBehaviour {
 			}
 		}
 
+		if(isPlayerOne) {
+			//Up
+			if (Input.GetKeyDown(KeyCode.W) && !jumping) {
+				jumping = true;
+				jumpProgress = 0f;
+				transform.eulerAngles = new Vector3(0f, 0f, 0f);
+			}
 
-		//Up
-		if (Input.GetKeyDown(KeyCode.W) && !jumping) {
-			jumping = true;
-			jumpProgress = 0f;
-			transform.eulerAngles = new Vector3(0f, 0f, 0f);
-		}
+			//Down
+			if (Input.GetKeyDown(KeyCode.S) && !jumping) {
+				jumping = true;
+				jumpProgress = 0f;
+				transform.eulerAngles = new Vector3(0f, 0f, 180f);
+			}
 
-		//Down
-		if (Input.GetKeyDown(KeyCode.S) && !jumping) {
-			jumping = true;
-			jumpProgress = 0f;
-			transform.eulerAngles = new Vector3(0f, 0f, 180f);
-		}
+			//Left
+			if (Input.GetKeyDown(KeyCode.A) && !jumping) {
+				jumping = true;
+				jumpProgress = 0f;
+				transform.eulerAngles = new Vector3(0f, 0f, 90f);
+			}
 
-		//Left
-		if (Input.GetKeyDown(KeyCode.A) && !jumping) {
-			jumping = true;
-			jumpProgress = 0f;
-			transform.eulerAngles = new Vector3(0f, 0f, 90f);
-		}
-
-		//Right
-		if (Input.GetKeyDown(KeyCode.D) && !jumping) {	
-			jumping = true;
-			jumpProgress = 0f;
-			transform.eulerAngles = new Vector3(0f, 0f, -90f);
+			//Right
+			if (Input.GetKeyDown(KeyCode.D) && !jumping) {	
+				jumping = true;
+				jumpProgress = 0f;
+				transform.eulerAngles = new Vector3(0f, 0f, -90f);
+			}
 		}
 	}
 
