@@ -18,6 +18,9 @@ public class FrogController : MonoBehaviour {
 
 	float jumpMax = 2.56f;
 
+	bool shook;
+	float shakeSpeed;
+
 	Animator anim;
 
 
@@ -30,6 +33,8 @@ public class FrogController : MonoBehaviour {
 		caughtInWeb = false;
 		webMoveCounter = 0;
 
+		shook = false;
+		shakeSpeed = 0.32f;
 	}
 	
 	// Update is called once per frame
@@ -41,19 +46,30 @@ public class FrogController : MonoBehaviour {
 			jumpProgress += jumpSpeed;
 			if(jumpProgress == jumpMax) {
 				jumping = false;
+				if(caughtInWeb)
+					anim.enabled = false;
 			}
 		}
 
-		if(isPlayerOne) {
+		if(shook) {
+			transform.Translate(shakeSpeed*Vector3.down);
+			shook = false;
+		}
+
+
+		if(isPlayerOne && !shook) {
 			//Up
 			if (Input.GetKeyDown(KeyCode.W) && !jumping) {
 				transform.eulerAngles = new Vector3(0f, 0f, 0f);
 				if(caughtInWeb) {
+					transform.Translate(shakeSpeed*Vector3.up);
+					shook = true;
 					webMoveCounter -= 1;
 					Color tmp = webCaughtIn.GetComponent<SpriteRenderer>().color;
-					tmp.a = tmp.a - 0.2f;;
+					tmp.a = tmp.a - 0.2f;
 					webCaughtIn.GetComponent<SpriteRenderer>().color = tmp;
 					if(webMoveCounter == 0) {
+						anim.enabled = true;
 						frogWeb.GetComponent<Animator>().SetBool("Break", true);
 						caughtInWeb = false;
 						Object.Destroy(webCaughtIn);
@@ -71,11 +87,14 @@ public class FrogController : MonoBehaviour {
 			if (Input.GetKeyDown(KeyCode.S) && !jumping) {
 				transform.eulerAngles = new Vector3(0f, 0f, 180f);
 				if(caughtInWeb) {
+					transform.Translate(shakeSpeed*Vector3.up);
+					shook = true;
 					webMoveCounter -= 1;
 					Color tmp = webCaughtIn.GetComponent<SpriteRenderer>().color;
-					tmp.a = tmp.a - 0.2f;;
+					tmp.a = tmp.a - 0.2f;
 					webCaughtIn.GetComponent<SpriteRenderer>().color = tmp;
 					if(webMoveCounter == 0) {
+						anim.enabled = true;
 						frogWeb.GetComponent<Animator>().SetBool("Break", true);
 						caughtInWeb = false;
 						Object.Destroy(webCaughtIn);
@@ -93,11 +112,14 @@ public class FrogController : MonoBehaviour {
 			if (Input.GetKeyDown(KeyCode.A) && !jumping) {
 				transform.eulerAngles = new Vector3(0f, 0f, 90f);
 				if(caughtInWeb) {
+					transform.Translate(shakeSpeed*Vector3.up);
+					shook = true;
 					webMoveCounter -= 1;
 					Color tmp = webCaughtIn.GetComponent<SpriteRenderer>().color;
-					tmp.a = tmp.a - 0.2f;;
+					tmp.a = tmp.a - 0.2f;
 					webCaughtIn.GetComponent<SpriteRenderer>().color = tmp;
 					if(webMoveCounter == 0) {
+						anim.enabled = true;
 						frogWeb.GetComponent<Animator>().SetBool("Break", true);
 						caughtInWeb = false;
 						Object.Destroy(webCaughtIn);
@@ -115,11 +137,14 @@ public class FrogController : MonoBehaviour {
 			if (Input.GetKeyDown(KeyCode.D) && !jumping) {
 				transform.eulerAngles = new Vector3(0f, 0f, -90f);	
 				if(caughtInWeb) {
+					transform.Translate(shakeSpeed*Vector3.up);
+					shook = true;
 					webMoveCounter -= 1;
 					Color tmp = webCaughtIn.GetComponent<SpriteRenderer>().color;
-					tmp.a = tmp.a - 0.2f;;
+					tmp.a = tmp.a - 0.2f;
 					webCaughtIn.GetComponent<SpriteRenderer>().color = tmp;
 					if(webMoveCounter == 0) {
+						anim.enabled = true;
 						frogWeb.GetComponent<Animator>().SetBool("Break", true);
 						caughtInWeb = false;
 						Object.Destroy(webCaughtIn);

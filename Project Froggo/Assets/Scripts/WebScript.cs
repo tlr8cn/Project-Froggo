@@ -28,6 +28,7 @@ public class WebScript : MonoBehaviour {
 			GameObject temp = (GameObject)Instantiate(frogWeb, player.transform.position, Quaternion.identity);
 			playerScript.frogWeb = temp;
 			playerScript.frogWeb.transform.SetParent(player.transform);
+			
 		}
 	}
 }
