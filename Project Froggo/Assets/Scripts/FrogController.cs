@@ -10,6 +10,12 @@ public class FrogController : MonoBehaviour {
 
 	public bool isPlayerOne;
 
+	public bool caughtInWeb;
+	public int webMoveCounter;
+	public GameObject webCaughtIn;
+
+	public GameObject frogWeb;
+
 	float jumpMax = 2.56f;
 
 	Animator anim;
@@ -20,6 +26,10 @@ public class FrogController : MonoBehaviour {
 		jumping = false;
 
 		anim = GetComponent<Animator>();
+
+		caughtInWeb = false;
+		webMoveCounter = 0;
+
 	}
 	
 	// Update is called once per frame
@@ -37,30 +47,90 @@ public class FrogController : MonoBehaviour {
 		if(isPlayerOne) {
 			//Up
 			if (Input.GetKeyDown(KeyCode.W) && !jumping) {
-				jumping = true;
-				jumpProgress = 0f;
 				transform.eulerAngles = new Vector3(0f, 0f, 0f);
+				if(caughtInWeb) {
+					webMoveCounter -= 1;
+					Color tmp = webCaughtIn.GetComponent<SpriteRenderer>().color;
+					tmp.a = tmp.a - 0.2f;;
+					webCaughtIn.GetComponent<SpriteRenderer>().color = tmp;
+					if(webMoveCounter == 0) {
+						frogWeb.GetComponent<Animator>().SetBool("Break", true);
+						caughtInWeb = false;
+						Object.Destroy(webCaughtIn);
+					}
+				}
+
+				if(!caughtInWeb) {
+					jumping = true;
+					jumpProgress = 0f;
+					
+				}
 			}
 
 			//Down
 			if (Input.GetKeyDown(KeyCode.S) && !jumping) {
-				jumping = true;
-				jumpProgress = 0f;
 				transform.eulerAngles = new Vector3(0f, 0f, 180f);
+				if(caughtInWeb) {
+					webMoveCounter -= 1;
+					Color tmp = webCaughtIn.GetComponent<SpriteRenderer>().color;
+					tmp.a = tmp.a - 0.2f;;
+					webCaughtIn.GetComponent<SpriteRenderer>().color = tmp;
+					if(webMoveCounter == 0) {
+						frogWeb.GetComponent<Animator>().SetBool("Break", true);
+						caughtInWeb = false;
+						Object.Destroy(webCaughtIn);
+					}
+				}
+
+				if(!caughtInWeb) {
+					jumping = true;
+					jumpProgress = 0f;
+					
+				}
 			}
 
 			//Left
 			if (Input.GetKeyDown(KeyCode.A) && !jumping) {
-				jumping = true;
-				jumpProgress = 0f;
 				transform.eulerAngles = new Vector3(0f, 0f, 90f);
+				if(caughtInWeb) {
+					webMoveCounter -= 1;
+					Color tmp = webCaughtIn.GetComponent<SpriteRenderer>().color;
+					tmp.a = tmp.a - 0.2f;;
+					webCaughtIn.GetComponent<SpriteRenderer>().color = tmp;
+					if(webMoveCounter == 0) {
+						frogWeb.GetComponent<Animator>().SetBool("Break", true);
+						caughtInWeb = false;
+						Object.Destroy(webCaughtIn);
+					}
+				}
+
+				if(!caughtInWeb) {
+					jumping = true;
+					jumpProgress = 0f;
+					
+				}
 			}
 
 			//Right
-			if (Input.GetKeyDown(KeyCode.D) && !jumping) {	
-				jumping = true;
-				jumpProgress = 0f;
-				transform.eulerAngles = new Vector3(0f, 0f, -90f);
+			if (Input.GetKeyDown(KeyCode.D) && !jumping) {
+				transform.eulerAngles = new Vector3(0f, 0f, -90f);	
+				if(caughtInWeb) {
+					webMoveCounter -= 1;
+					Color tmp = webCaughtIn.GetComponent<SpriteRenderer>().color;
+					tmp.a = tmp.a - 0.2f;;
+					webCaughtIn.GetComponent<SpriteRenderer>().color = tmp;
+					if(webMoveCounter == 0) {
+						frogWeb.GetComponent<Animator>().SetBool("Break", true);
+						caughtInWeb = false;
+						Object.Destroy(webCaughtIn);
+					}
+				}
+
+				if(!caughtInWeb) {
+					jumping = true;
+					jumpProgress = 0f;
+					
+				}
 			}
 		}
 	}
