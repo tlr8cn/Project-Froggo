@@ -16,6 +16,8 @@ public class FrogController : MonoBehaviour {
 
 	public GameObject frogWeb;
 
+	public bool movementDisabled;
+
 	float jumpMax = 2.56f;
 
 	bool shook;
@@ -35,6 +37,8 @@ public class FrogController : MonoBehaviour {
 
 		shook = false;
 		shakeSpeed = 0.32f;
+
+		movementDisabled = false;
 	}
 	
 	// Update is called once per frame
@@ -57,7 +61,7 @@ public class FrogController : MonoBehaviour {
 		}
 
 
-		if(isPlayerOne && !shook) {
+		if(isPlayerOne && !shook && !movementDisabled) {
 			//Up
 			if (Input.GetKeyDown(KeyCode.W) && !jumping) {
 				transform.eulerAngles = new Vector3(0f, 0f, 0f);

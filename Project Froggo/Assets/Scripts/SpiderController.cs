@@ -4,6 +4,9 @@ using UnityEngine;
 
 public class SpiderController : MonoBehaviour {
 
+
+
+
 	// Use this for initialization
 	void Start () {
 		
@@ -13,4 +16,5 @@ public class SpiderController : MonoBehaviour {
 	void Update () {
 		
 	}
+
 }
