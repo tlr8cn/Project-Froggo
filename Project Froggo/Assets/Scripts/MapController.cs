@@ -26,7 +26,6 @@ public class MapController : MonoBehaviour {
 	
 	// Update is called once per frame
 	void Update () {
-		//GameObject room = rooms[0];
 
 		if(changingRooms) {
 			frogController.movementDisabled = true;

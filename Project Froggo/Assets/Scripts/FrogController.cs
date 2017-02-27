@@ -29,6 +29,8 @@ public class FrogController : MonoBehaviour {
     public float shakeDuration;
     public float repeatTime;
 
+    public EnemyScript enemyScript;
+
 	float jumpMax = 2.56f;
 
 
@@ -50,6 +52,9 @@ public class FrogController : MonoBehaviour {
 		backToOriginalTile = false;
 
 		mainCamera = GameObject.Find("Main Camera").GetComponent<Camera>();
+
+		GameObject enemyCommunicator = GameObject.Find("Enemy Communicator");
+		enemyScript = enemyCommunicator.GetComponent<EnemyScript>();
 	}
 	
 	// Update is called once per frame
@@ -57,127 +62,64 @@ public class FrogController : MonoBehaviour {
 		anim.SetBool("Jumping", jumping);
 
 		if(backToOriginalTile) {
-			transform.Translate(jumpSpeed*Vector3.down);
-			if(transform.position == originalPosition) {
-				backToOriginalTile = false;
-				anim.enabled = true;
-			}
+
+			goBackToOriginalTile();
+
 		} else {
 
 			if(jumping && !wallBumped) {
-				transform.Translate(jumpSpeed*Vector3.up);
-				jumpProgress += jumpSpeed;
-				if(jumpProgress == jumpMax) {
-					jumping = false;
-					originalPosition = transform.position;
-					if(caughtInWeb)
-						anim.enabled = false;
-				}
+
+				continueJumping();
+
 			} else if(jumping && wallBumped) {
-				jumping = false;
-				wallBumped = false;
-				backToOriginalTile = true;
-				anim.enabled = false;
+
+				cancelJump();
+
 			}
 		}
 
-		if(isPlayerOne && !movementDisabled) {
+		if(isPlayerOne && !movementDisabled && enemyScript.enemiesMoved) {
 			//Up
 			if (Input.GetKeyDown(KeyCode.W) && !jumping && !backToOriginalTile) {
 				transform.eulerAngles = new Vector3(0f, 0f, 0f);
-				if(caughtInWeb) {
-				    InvokeRepeating("CameraShake", 0, repeatTime);
-				    Invoke("StopShaking", shakeDuration);
-					webMoveCounter -= 1;
-					Color tmp = webCaughtIn.GetComponent<SpriteRenderer>().color;
-					tmp.a = tmp.a - 0.2f;
-					webCaughtIn.GetComponent<SpriteRenderer>().color = tmp;
-					if(webMoveCounter == 0) {
-						anim.enabled = true;
-						frogWeb.GetComponent<Animator>().SetBool("Break", true);
-						caughtInWeb = false;
-						Object.Destroy(webCaughtIn);
-					}
-				}
+
+				struggleInWeb();
 
 				if(!caughtInWeb) {
-					jumping = true;
-					jumpProgress = 0f;
+					startJump();
 				}
 			}
 
 			//Down
 			if (Input.GetKeyDown(KeyCode.S) && !jumping && !backToOriginalTile) {
 				transform.eulerAngles = new Vector3(0f, 0f, 180f);
-				if(caughtInWeb) {
-				    InvokeRepeating("CameraShake", 0, repeatTime);
-				    Invoke("StopShaking", shakeDuration);
-					webMoveCounter -= 1;
-					Color tmp = webCaughtIn.GetComponent<SpriteRenderer>().color;
-					tmp.a = tmp.a - 0.2f;
-					webCaughtIn.GetComponent<SpriteRenderer>().color = tmp;
-					if(webMoveCounter == 0) {
-						anim.enabled = true;
-						frogWeb.GetComponent<Animator>().SetBool("Break", true);
-						caughtInWeb = false;
-						Object.Destroy(webCaughtIn);
-					}
-				}
+				
+				struggleInWeb();
 
 				if(!caughtInWeb) {
-					jumping = true;
-					jumpProgress = 0f;
-					
+					startJump();	
 				}
 			}
 
 			//Left
 			if (Input.GetKeyDown(KeyCode.A) && !jumping && !backToOriginalTile) {
 				transform.eulerAngles = new Vector3(0f, 0f, 90f);
-				if(caughtInWeb) {
-				    InvokeRepeating("CameraShake", 0, repeatTime);
-				    Invoke("StopShaking", shakeDuration);
-					webMoveCounter -= 1;
-					Color tmp = webCaughtIn.GetComponent<SpriteRenderer>().color;
-					tmp.a = tmp.a - 0.2f;
-					webCaughtIn.GetComponent<SpriteRenderer>().color = tmp;
-					if(webMoveCounter == 0) {
-						anim.enabled = true;
-						frogWeb.GetComponent<Animator>().SetBool("Break", true);
-						caughtInWeb = false;
-						Object.Destroy(webCaughtIn);
-					}
-				}
+
+				struggleInWeb();
 
 				if(!caughtInWeb) {
-					jumping = true;
-					jumpProgress = 0f;
-					
+					startJump();
 				}
 			}
 
 			//Right
 			if (Input.GetKeyDown(KeyCode.D) && !jumping && !backToOriginalTile) {
 				transform.eulerAngles = new Vector3(0f, 0f, -90f);	
-				if(caughtInWeb) {
-				    InvokeRepeating("CameraShake", 0, repeatTime);
-				    Invoke("StopShaking", shakeDuration);
-					webMoveCounter -= 1;
-					Color tmp = webCaughtIn.GetComponent<SpriteRenderer>().color;
-					tmp.a = tmp.a - 0.2f;
-					webCaughtIn.GetComponent<SpriteRenderer>().color = tmp;
-					if(webMoveCounter == 0) {
-						anim.enabled = true;
-						frogWeb.GetComponent<Animator>().SetBool("Break", true);
-						caughtInWeb = false;
-						Object.Destroy(webCaughtIn);
-					}
-				}
+
+				struggleInWeb();
 
 				if(!caughtInWeb) {
-					jumping = true;
-					jumpProgress = 0f;
-					
+					startJump();
 				}
 			}
 		}
@@ -202,6 +144,58 @@ public class FrogController : MonoBehaviour {
     void StopShaking()
     {
         CancelInvoke("CameraShake");
-       // mainCamera.transform.position = originalCameraPosition;
     }
+
+    void struggleInWeb() {
+    	if(caughtInWeb) {
+			InvokeRepeating("CameraShake", 0, repeatTime);
+			Invoke("StopShaking", shakeDuration);
+			enemyScript.frogMoved = true;
+			webMoveCounter -= 1;
+			Color tmp = webCaughtIn.GetComponent<SpriteRenderer>().color;
+			tmp.a = tmp.a - 0.2f;
+			webCaughtIn.GetComponent<SpriteRenderer>().color = tmp;
+			if(webMoveCounter == 0) {
+				anim.enabled = true;
+				frogWeb.GetComponent<Animator>().SetBool("Break", true);
+				caughtInWeb = false;
+				Object.Destroy(webCaughtIn);
+			}
+		}
+    }
+
+
+    void goBackToOriginalTile() {
+    	transform.Translate(jumpSpeed*Vector3.down);
+		if(transform.position == originalPosition) {
+			backToOriginalTile = false;
+			anim.enabled = true;
+			enemyScript.frogMoved = true;
+		}
+    }
+
+    void cancelJump() {
+    	jumping = false;
+		wallBumped = false;
+		backToOriginalTile = true;
+		anim.enabled = false;
+    }
+
+    void continueJumping() {
+    	transform.Translate(jumpSpeed*Vector3.up);
+		jumpProgress += jumpSpeed;
+		if(jumpProgress == jumpMax) {
+			jumping = false;
+			enemyScript.frogMoved = true;
+			originalPosition = transform.position;
+			if(caughtInWeb)
+				anim.enabled = false;
+		}
+    }
+
+    void startJump() {
+    	jumping = true;
+		jumpProgress = 0f;
+    }
+
 }
