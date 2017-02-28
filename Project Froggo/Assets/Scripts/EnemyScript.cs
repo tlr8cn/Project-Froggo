@@ -53,11 +53,9 @@ public class EnemyScript : MonoBehaviour {
 		bool enemiesDone = true;
 		foreach(GameObject enemy in enemies) {
 
-			Debug.Log(enemy.tag);
 	        switch (enemy.tag)
 	        {
 	            case "Spider":
-	            	Debug.Log(enemy.GetComponent<SpiderController>().doneMoving);
 	            	if(!enemy.GetComponent<SpiderController>().doneMoving) {
 	            		enemiesDone = false;
 	            	}

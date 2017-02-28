@@ -150,16 +150,22 @@ public class FrogController : MonoBehaviour {
     	if(caughtInWeb) {
 			InvokeRepeating("CameraShake", 0, repeatTime);
 			Invoke("StopShaking", shakeDuration);
-			enemyScript.frogMoved = true;
 			webMoveCounter -= 1;
 			Color tmp = webCaughtIn.GetComponent<SpriteRenderer>().color;
 			tmp.a = tmp.a - 0.2f;
 			webCaughtIn.GetComponent<SpriteRenderer>().color = tmp;
-			if(webMoveCounter == 0) {
+
+			if(webMoveCounter > 0) {
+				enemyScript.frogMoved = true;
+			} else {
 				anim.enabled = true;
 				frogWeb.GetComponent<Animator>().SetBool("Break", true);
 				caughtInWeb = false;
-				Object.Destroy(webCaughtIn);
+				
+				//create illusion that web is destroyed
+				tmp.a = 0f;
+				webCaughtIn.GetComponent<SpriteRenderer>().color = tmp;
+				webCaughtIn.GetComponent<BoxCollider2D>().enabled = false;
 			}
 		}
     }
