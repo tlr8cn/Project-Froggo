@@ -31,7 +31,23 @@ public class FrogController : MonoBehaviour {
 
     public EnemyScript enemyScript;
 
+    public GameObject frogTongue;
+    public bool attacking;
+    public float attackCounter;
+    public float attackReturnCounter;
+    public bool attackReturning;
+
+
+
 	float jumpMax = 2.56f;
+	public float attackCap = 0.2f;
+	public float attackReturnCap = 0.13f;
+
+
+	//public string attackKey;
+
+
+	public Dictionary < string, List<GameObject> > keyToEnemies;
 
 
 	Animator anim;
@@ -55,6 +71,16 @@ public class FrogController : MonoBehaviour {
 
 		GameObject enemyCommunicator = GameObject.Find("Enemy Communicator");
 		enemyScript = enemyCommunicator.GetComponent<EnemyScript>();
+
+		frogTongue = transform.GetChild(0).gameObject;
+
+		keyToEnemies = new Dictionary< string, List<GameObject> >();
+
+		keyToEnemies.Add(KeyCode.D.ToString(), new List<GameObject>());
+		keyToEnemies.Add(KeyCode.S.ToString(), new List<GameObject>());
+		keyToEnemies.Add(KeyCode.A.ToString(), new List<GameObject>());
+		keyToEnemies.Add(KeyCode.W.ToString(), new List<GameObject>());
+
 	}
 	
 	// Update is called once per frame
@@ -75,51 +101,123 @@ public class FrogController : MonoBehaviour {
 
 				cancelJump();
 
+			} else if(attacking) {
+				attackCounter += Time.deltaTime;
+				if(attackCounter >= attackCap) {
+					//attacking = false;
+					anim.SetBool("Attack", false);
+					frogTongue.GetComponent<Animator>().SetBool("Out", false);
+					//enemyScript.frogMoved = true;
+					attackReturning = true;
+					InvokeRepeating("CameraShake", 0, repeatTime);
+					Invoke("StopShaking", shakeDuration);
+				}
+
+				if(attackReturning) {
+					attackReturnCounter += Time.deltaTime;
+					if(attackCounter >= attackCap) {
+						enemyScript.frogMoved = true;
+						attacking = false;
+						attackReturning = false;
+					}
+				}
 			}
 		}
 
 		if(isPlayerOne && !movementDisabled && enemyScript.enemiesMoved) {
+
+			if (Input.GetKeyDown("space") && !jumping && !backToOriginalTile && !attacking) {
+				anim.SetBool("Attack", true);
+				frogTongue.GetComponent<Animator>().SetBool("Out", true);
+				attackCounter = 0f;
+				attacking = true;
+			}
 			//Up
-			if (Input.GetKeyDown(KeyCode.W) && !jumping && !backToOriginalTile) {
+			else if (Input.GetKeyDown(KeyCode.W) && !jumping && !backToOriginalTile && !attacking) {
 				transform.eulerAngles = new Vector3(0f, 0f, 0f);
 
 				struggleInWeb();
 
 				if(!caughtInWeb) {
-					startJump();
+
+					if(keyToEnemies[KeyCode.W.ToString()].Count <= 0)
+						startJump();
+					else {
+						anim.SetBool("Attack", true);
+						frogTongue.GetComponent<Animator>().SetBool("Out", true);
+						attackCounter = 0f;
+						attacking = true;
+
+						foreach(GameObject enemy in keyToEnemies[KeyCode.W.ToString()]) {
+							enemyScript.sendDamage(enemy);
+						}
+					}
 				}
 			}
-
 			//Down
-			if (Input.GetKeyDown(KeyCode.S) && !jumping && !backToOriginalTile) {
+			else if (Input.GetKeyDown(KeyCode.S) && !jumping && !backToOriginalTile && !attacking) {
 				transform.eulerAngles = new Vector3(0f, 0f, 180f);
 				
 				struggleInWeb();
 
 				if(!caughtInWeb) {
-					startJump();	
+
+					if(keyToEnemies[KeyCode.S.ToString()].Count <= 0)
+						startJump();
+					else {
+						anim.SetBool("Attack", true);
+						frogTongue.GetComponent<Animator>().SetBool("Out", true);
+						attackCounter = 0f;
+						attacking = true;
+
+						foreach(GameObject enemy in keyToEnemies[KeyCode.S.ToString()]) {
+							enemyScript.sendDamage(enemy);
+						}
+					}	
 				}
 			}
-
 			//Left
-			if (Input.GetKeyDown(KeyCode.A) && !jumping && !backToOriginalTile) {
+			else if (Input.GetKeyDown(KeyCode.A) && !jumping && !backToOriginalTile && !attacking) {
 				transform.eulerAngles = new Vector3(0f, 0f, 90f);
 
 				struggleInWeb();
 
 				if(!caughtInWeb) {
-					startJump();
+
+					if(keyToEnemies[KeyCode.A.ToString()].Count <= 0)
+						startJump();
+					else {
+						anim.SetBool("Attack", true);
+						frogTongue.GetComponent<Animator>().SetBool("Out", true);
+						attackCounter = 0f;
+						attacking = true;
+
+						foreach(GameObject enemy in keyToEnemies[KeyCode.A.ToString()]) {
+							enemyScript.sendDamage(enemy);
+						}
+					}
 				}
 			}
-
 			//Right
-			if (Input.GetKeyDown(KeyCode.D) && !jumping && !backToOriginalTile) {
+			else if (Input.GetKeyDown(KeyCode.D) && !jumping && !backToOriginalTile && !attacking) {
 				transform.eulerAngles = new Vector3(0f, 0f, -90f);	
 
 				struggleInWeb();
 
 				if(!caughtInWeb) {
-					startJump();
+
+					if(keyToEnemies[KeyCode.D.ToString()].Count <= 0)
+						startJump();
+					else {
+						anim.SetBool("Attack", true);
+						frogTongue.GetComponent<Animator>().SetBool("Out", true);
+						attackCounter = 0f;
+						attacking = true;
+
+						foreach(GameObject enemy in keyToEnemies[KeyCode.D.ToString()]) {
+							enemyScript.sendDamage(enemy);
+						}
+					}
 				}
 			}
 		}
@@ -166,6 +264,7 @@ public class FrogController : MonoBehaviour {
 				tmp.a = 0f;
 				webCaughtIn.GetComponent<SpriteRenderer>().color = tmp;
 				webCaughtIn.GetComponent<BoxCollider2D>().enabled = false;
+				webCaughtIn.GetComponent<WebScript>().webDestroyed = true;
 			}
 		}
     }

@@ -62,11 +62,19 @@ public class MapController : MonoBehaviour {
 	void fadeIn(GameObject room) {
 		bool stillFadingIn = false;
 		foreach (Transform child in room.transform) {
-			Color tmp = child.GetComponent<SpriteRenderer>().color;
-			tmp.a = tmp.a + fadeSpeed;
-			child.GetComponent<SpriteRenderer>().color = tmp;
-			if(tmp.a < 1f)
-				stillFadingIn = true;
+			bool stayFaded = false;
+			if(child.tag == "Spider Web") {
+				if(child.GetComponent<WebScript>().webDestroyed == true)
+					stayFaded = true;
+			}
+
+			if(!stayFaded) {
+				Color tmp = child.GetComponent<SpriteRenderer>().color;
+				tmp.a = tmp.a + fadeSpeed;
+				child.GetComponent<SpriteRenderer>().color = tmp;
+				if(tmp.a < 1f)
+					stillFadingIn = true;
+			}
 		}
 
 		fadeInComplete = !stillFadingIn;

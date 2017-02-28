@@ -7,12 +7,16 @@ public class WebScript : MonoBehaviour {
 	GameObject player;
 	FrogController playerScript;
 
+	public bool webDestroyed;
+
 	public GameObject frogWeb;
 
 	// Use this for initialization
 	void Start () {
 		player = GameObject.FindWithTag("Frog");
 		playerScript = player.GetComponent<FrogController>();
+
+		webDestroyed = false;
 	}
 	
 	// Update is called once per frame

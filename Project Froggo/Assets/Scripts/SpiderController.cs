@@ -34,8 +34,15 @@ public class SpiderController : MonoBehaviour {
 
 	public int webIndx;
 
+	Animator anim;
+
+	public int hitpoints = 2;
+
+
 	// Use this for initialization
 	void Start () {
+		anim = GetComponent<Animator>();
+
 		moving = false;
 
 		inAttackRange = false;
@@ -68,6 +75,11 @@ public class SpiderController : MonoBehaviour {
 	
 	// Update is called once per frame
 	void Update () {
+		if(hitpoints <= 0) {
+			killSpider();
+		}
+
+		anim.SetBool("Jumping", moving);
 
 		if(moving) {
 			continueMoving();
@@ -79,22 +91,22 @@ public class SpiderController : MonoBehaviour {
 		}
 	}
 
-	void OnTriggerEnter2D(Collider2D col) {
+	void OnTriggerStay2D(Collider2D col) {
+
 		if(col.tag == "Frog") {
-			inAttackRange = true;
+			enemyScript.sendAttackPotential(gameObject);
 		}
 	}
 
 	void OnTriggerExit2D(Collider2D col) {
 		if(col.tag == "Frog") {
-			inAttackRange = false;
+			enemyScript.removeAttackPotential(gameObject);
 		}
 	}
 
 	void startMove() {
     	moving = true;
 		moveProgress = 0f;
-
 
 		if(horizontalLine && !movingBack) {
 			transform.eulerAngles = new Vector3(0f, 0f, -90f);	
@@ -149,6 +161,9 @@ public class SpiderController : MonoBehaviour {
     	transform.Translate(moveSpeed*Vector3.up);
 		moveProgress += moveSpeed;
 		if(moveProgress == moveMax) {
+			if(enemyScript.enemyOutsideAttackRange(gameObject))
+				enemyScript.removeAttackPotential(gameObject);
+
 			moving = false;
 			doneMoving = true;
 			if(webs[webIndx].GetComponent<BoxCollider2D>().enabled == false)
@@ -158,7 +173,6 @@ public class SpiderController : MonoBehaviour {
     }
 
     void replaceWeb() {
-    	//GameObject newWeb = (GameObject)Instantiate(web, transform.position, Quaternion.identity);
     	Color tmp = webs[webIndx].GetComponent<SpriteRenderer>().color;
 		tmp.a = 1f;
 		webs[webIndx].GetComponent<SpriteRenderer>().color = tmp;
@@ -170,6 +184,23 @@ public class SpiderController : MonoBehaviour {
     		return true;
     	}
     	return false;
+    }
+
+
+    public void dealDamage() {
+    	hitpoints -= 1;
+    }
+
+
+    void killSpider() {
+    	//clearWebs();
+    	enemyScript.killEnemy(gameObject);
+    }
+
+    void clearWebs() {
+    	foreach(GameObject w in webs) {
+    		Destroy(w);
+    	}
     }
 
 }
