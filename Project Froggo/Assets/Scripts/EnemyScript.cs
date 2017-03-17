@@ -7,35 +7,41 @@ public class EnemyScript : MonoBehaviour {
 
 	public List<GameObject> enemies;
 
-	public bool frogMoved;
+	//public bool frogMoved;
 
 	public bool enemiesMoved;
 
 	public GameObject playerFrog;
 	FrogController frogScript;
 
+	public int moveInterval;
+	int moveCounter;
+
 	// Use this for initialization
 	void Start () {
+		moveCounter = 0;
 		//enemies = new List<GameObject>();
 
-		frogMoved = false;
+	//	frogMoved = false;
 
-		enemiesMoved = true;
+	//	enemiesMoved = true;
 
 		frogScript = playerFrog.GetComponent<FrogController>();
 	}
 	
 	// Update is called once per frame
 	void Update () {
-		if(frogMoved) {
+ 		if(moveCounter % moveInterval == 0) {
 			enemyBroadcast();
-			frogMoved = false;
+			//frogMoved = false;
 			enemiesMoved = false;
 		}
 
 		if(!enemiesMoved) {
 			checkOnEnemies();
 		}
+
+		moveCounter++;
 	}
 
 
@@ -53,6 +59,7 @@ public class EnemyScript : MonoBehaviour {
 	        }
 	    }
 	}
+
 
 	void checkOnEnemies() {
 
@@ -75,7 +82,6 @@ public class EnemyScript : MonoBehaviour {
 	    	enemiesMoved = true;
 	    
 	}
-
 
 	public void sendAttackPotential(GameObject enemy) {
 

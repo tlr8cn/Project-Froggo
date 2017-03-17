@@ -177,6 +177,7 @@ public class SpiderController : MonoBehaviour {
 		tmp.a = 1f;
 		webs[webIndx].GetComponent<SpriteRenderer>().color = tmp;
     	webs[webIndx].GetComponent<BoxCollider2D>().enabled = true;
+    	webs[webIndx].GetComponent<WebScript>().webDestroyed = false;
     }
 
     bool withinError(float x1, float x2) {

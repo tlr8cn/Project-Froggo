@@ -116,7 +116,7 @@ public class FrogController : MonoBehaviour {
 				if(attackReturning) {
 					attackReturnCounter += Time.deltaTime;
 					if(attackCounter >= attackCap) {
-						enemyScript.frogMoved = true;
+						//enemyScript.frogMoved = true;
 						attacking = false;
 						attackReturning = false;
 					}
@@ -124,16 +124,17 @@ public class FrogController : MonoBehaviour {
 			}
 		}
 
-		if(isPlayerOne && !movementDisabled && enemyScript.enemiesMoved) {
-
+		if(isPlayerOne && !movementDisabled /*&& enemyScript.enemiesMoved*/) {
+/*
 			if (Input.GetKeyDown("space") && !jumping && !backToOriginalTile && !attacking) {
 				anim.SetBool("Attack", true);
 				frogTongue.GetComponent<Animator>().SetBool("Out", true);
 				attackCounter = 0f;
 				attacking = true;
 			}
+*/
 			//Up
-			else if (Input.GetKeyDown(KeyCode.W) && !jumping && !backToOriginalTile && !attacking) {
+			if (Input.GetKeyDown(KeyCode.W) && !jumping && !backToOriginalTile && !attacking) {
 				transform.eulerAngles = new Vector3(0f, 0f, 0f);
 
 				struggleInWeb();
@@ -253,9 +254,12 @@ public class FrogController : MonoBehaviour {
 			tmp.a = tmp.a - 0.2f;
 			webCaughtIn.GetComponent<SpriteRenderer>().color = tmp;
 
+			/*
 			if(webMoveCounter > 0) {
 				enemyScript.frogMoved = true;
 			} else {
+			*/
+			if(webMoveCounter == 0) {
 				anim.enabled = true;
 				frogWeb.GetComponent<Animator>().SetBool("Break", true);
 				caughtInWeb = false;
@@ -266,6 +270,7 @@ public class FrogController : MonoBehaviour {
 				webCaughtIn.GetComponent<BoxCollider2D>().enabled = false;
 				webCaughtIn.GetComponent<WebScript>().webDestroyed = true;
 			}
+			//}
 		}
     }
 
@@ -275,7 +280,7 @@ public class FrogController : MonoBehaviour {
 		if(transform.position == originalPosition) {
 			backToOriginalTile = false;
 			anim.enabled = true;
-			enemyScript.frogMoved = true;
+		//	enemyScript.frogMoved = true;
 		}
     }
 
@@ -291,7 +296,7 @@ public class FrogController : MonoBehaviour {
 		jumpProgress += jumpSpeed;
 		if(jumpProgress == jumpMax) {
 			jumping = false;
-			enemyScript.frogMoved = true;
+		//	enemyScript.frogMoved = true;
 			originalPosition = transform.position;
 			if(caughtInWeb)
 				anim.enabled = false;
